@@ -1,14 +1,16 @@
 from tkinter import *
-from tkinter import ttk,messagebox
+from tkinter import ttk, messagebox
 from PIL import ImageTk, Image
 import sys
 import sqlite3
 
 from base_de_datos import BaseDatos
 
+
 class Administrador:
     def __init__(self):
         self.principal()
+
     def principal(self):
         # Cofiguracion de ventana
         self.ventana = Tk()
@@ -19,16 +21,18 @@ class Administrador:
         self.ventana.config(background="#fff")
 
         # contenedores
-        self.contenedor_tabla= Frame(self.ventana, background="#8DEEF7")
-        self.contenedor_tabla.place(relx=0.03, rely=0.05, relwidth=0.7, relheight=0.65)
+        self.contenedor_tabla = Frame(self.ventana, background="#8DEEF7")
+        self.contenedor_tabla.place(relx=0.03, rely=0.05, relwidth=0.7, relheight=0.6)
 
-        self.contenedor_entry = Frame(self.ventana,background="#DFDFDF")
-        self.contenedor_entry.place(relx=0.75, rely=0.05, relwidth=0.22, relheight=0.7)
+        self.contenedor_entry = Frame(self.ventana, background="#DFDFDF")
+        self.contenedor_entry.place(relx=0.75, rely=0.05, relwidth=0.22, relheight=0.6)
+
+        self.contenedor_tabla_ventas = Frame(self.ventana,background="black")
+        self.contenedor_tabla_ventas.place(relx=0.05,rely=0.67,relheight=0.25,relwidth=0.4)
 
         # Label y Entry para el ingreso de productos
-        self.codigo_label = Label(self.contenedor_entry,text="CODIGO").place(relx=0.08,rely=0.05)
-        self.codigo_entry = Entry(self.contenedor_entry)
-        self.codigo_entry.place(relx=0.08,rely=0.1)
+        self.cartel_label = Label(self.contenedor_entry, text="ENVIOS/ACTUALIZACION \nDE DATOS",font=("Verdana",12),fg="red").place(relx=0.08, rely=0.05)
+
 
         self.producto_label = Label(self.contenedor_entry, text="PRODUCTO").place(relx=0.08, rely=0.15)
         self.producto_entry = Entry(self.contenedor_entry)
@@ -39,7 +43,7 @@ class Administrador:
         self.marca_entry.place(relx=0.08, rely=0.3)
 
         self.seccion_label = Label(self.contenedor_entry, text="SECCION").place(relx=0.08, rely=0.35)
-        #self.valores_seccion = (" ","Comida","Limpieza","Higiene","Deportes","Libreria","Tecnologia","Hogar","Otros")
+        # self.valores_seccion = (" ","Comida","Limpieza","Higiene","Deportes","Libreria","Tecnologia","Hogar","Otros")
         self.seccion_entry = Entry(self.contenedor_entry)
         self.seccion_entry.place(relx=0.08, rely=0.4)
 
@@ -56,9 +60,11 @@ class Administrador:
         self.descripcion_entry.place(relx=0.08, rely=0.7)
 
         # Botones del contenedor Entry
-        self.enviar_boton = Button(self.contenedor_entry,text="ENVIAR",command=self.enviar_datos).place(relx=0.5,rely=0.8) # Revisar estilos y tamaño
+        self.enviar_boton = Button(self.contenedor_entry, text="ENVIAR", command=self.enviar_datos,width=10,height=2,fg="white",bg="green").place(relx=0.65,rely=0.7)
+        self.refrescar_pantalla_boton = Button(self.contenedor_entry, text="ACTUALIZAR",width=10,height=2,fg="white",bg="black").place(relx=0.65,rely=0.85)# Revisar estilos y tamaño
+        self.actualizar_datos_boton = Button(self.contenedor_entry, text="REFRESCAR PAG",command=self.refrescar, width=15,height=2, fg="white", bg="red").place(relx=0.20, rely=0.85)
 
-        # Creacion de la tabla
+        # Creacion de la tabla principal (productos)
         self.tabla = ttk.Treeview(self.contenedor_tabla, height=20,
                                   columns=("#1", "#2", "#3", "#4", "#5", "#6", "#7"))
         self.tabla.place(relx=0, rely=0)
@@ -80,7 +86,7 @@ class Administrador:
         self.tabla.heading("#6", text="STOCK", anchor=CENTER)
         self.tabla.heading("#7", text="DESCRIPCION", anchor=CENTER)
 
-        # Introducir los valores en la tabla
+        # Introducir los valores en la tabla de productos
         self.base_de_datos = BaseDatos()
         self.base_de_datos.crear_base_productos()
         self.conexion = sqlite3.connect("./base_datos/productos.db")
@@ -94,29 +100,52 @@ class Administrador:
 
         self.ventana.mainloop()
 
+    # Creacion de tabla de ventas realizadas
+
+        self.tabla_ventas = ttk.Treeview(self.contenedor_tabla_ventas, height=20,
+                                  columns=("#1", "#2", "#3", "#4", "#5"))
+        self.tabla_ventas.place(relx=0, rely=0)
+
+        self.tabla_ventas.column("#1", width=40, anchor=CENTER)
+        self.tabla_ventas.column("#2", width=40, anchor=CENTER)
+        self.tabla_ventas.column("#3", width=40, anchor=CENTER)
+        self.tabla_ventas.column("#4", width=40, anchor=CENTER)
+        self.tabla_ventas.column("#5", width=40, anchor=CENTER)
+
+        self.tabla_ventas["show"] = "headings"
+        self.tabla_ventas.heading("#1", text="VENTA", anchor=CENTER)
+        self.tabla_ventas.heading("#2", text="DNI", anchor=CENTER)
+        self.tabla_ventas.heading("#3", text="NOMBRE", anchor=CENTER)
+        self.tabla_ventas.heading("#4", text="APELLIDO", anchor=CENTER)
+        self.tabla_ventas.heading("#5", text="MONTO", anchor=CENTER)
+
+
     # Funcion para validar que no halla campos vacios en los entry antes de enviar
     def validacion_datos(self):
-        return not self.producto_entry.get() or not self.marca_entry.get() or self.seccion_entry.get()   \
-            or not self.precio_entry.get() or not self.stock_entry.get() or not self.descripcion_entry.get() or not self.codigo_entry.get()
+        return not self.producto_entry.get() or not self.marca_entry.get() or not self.seccion_entry.get() \
+               or not self.precio_entry.get() or not self.stock_entry.get() or not self.descripcion_entry.get()
 
     # Funcion para enviar los datos de los entry a la base de datos
     def enviar_datos(self):
         if self.validacion_datos() == True:
-            messagebox.showerror("AVISO","Debe completar todos los campos")
+            messagebox.showerror("AVISO", "Debe completar todos los campos")
         else:
-            self.base_de_datos.insertar_datos_productos(self.codigo_entry.get(),self.producto_entry.get(),self.marca_entry.get(),
-                                                    self.seccion_entry.get(),self.precio_entry.get(),
-                                                    self.stock_entry.get(),self.descripcion_entry.get())
-            self.producto_entry.delete(0,END)
-            self.marca_entry.delete(0,END)
-            self.seccion_entry.delete(0,END)
+            self.base_de_datos.insertar_datos_productos(self.producto_entry.get(),
+                                                        self.marca_entry.get(),
+                                                        self.seccion_entry.get(), self.precio_entry.get(),
+                                                        self.stock_entry.get(), self.descripcion_entry.get())
+            self.producto_entry.delete(0, END)
+            self.marca_entry.delete(0, END)
+            self.seccion_entry.delete(0, END)
             self.precio_entry.delete(0, END)
-            self.stock_entry.delete(0,END)
-            self.descripcion_entry.delete(0,END)
+            self.stock_entry.delete(0, END)
+            self.descripcion_entry.delete(0, END)
 
-            messagebox.showinfo("AVISO","Los datos se enviaron exitosamente")
-
-
+            messagebox.showinfo("AVISO", "Los datos se enviaron exitosamente")
+    # Funcion para refrescar la pagina y actualizar los datos
+    def refrescar(self):
+        self.ventana.destroy()
+        Administrador()
 
 
 

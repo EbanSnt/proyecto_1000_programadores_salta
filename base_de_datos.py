@@ -7,7 +7,7 @@ class BaseDatos:
         self.conexion = sqlite3.connect("./base_datos/productos.db")
         self.cursor = self.conexion.cursor()
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS PRODUCTOS (
-        CODIGO INTEGER,
+        ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         PRODUCTO TEXT,
         MARCA TEXT,
         SECCION TEXT,
@@ -32,7 +32,7 @@ class BaseDatos:
         self.conexion = sqlite3.connect("./base_datos/ventas.db")
         self.cursor = self.conexion.cursor()
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS VENTAS (
-        VENTAS INTEGER PRIMARY KEY AUTOINCREMENT,
+        ID INTEGER PRIMARY KEY AUTOINCREMENT,
         DNI INTEGER,
         NOMBRE TEXT,
         APELLIDO TEXT,
@@ -44,7 +44,7 @@ class BaseDatos:
         self.conexion = sqlite3.connect("./base_datos/compras.db")
         self.cursor = self.conexion.cursor()
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS COMPRAS (
-        COMPRAS INTEGER PRIMARY KEY AUTOINCREMENT,
+        ID INTEGER PRIMARY KEY AUTOINCREMENT,
         DNI INTEGER,
         NOMBRE TEXT,
         APELLIDO TEXT
@@ -55,10 +55,10 @@ class BaseDatos:
 
     # FUNCIONES PARA INSERTAR LOS DATOS
 
-    def insertar_datos_productos(self,codigo,producto,marca,seccion,precio,stock,descripcion):
+    def insertar_datos_productos(self,producto,marca,seccion,precio,stock,descripcion):
         self.conexion = sqlite3.connect("./base_datos/productos.db")
         self.cursor = self.conexion.cursor()
-        self.cursor.execute(f"INSERT INTO PRODUCTOS VALUES ({codigo},'{producto}','{marca}','{seccion}'"
+        self.cursor.execute(f"INSERT INTO PRODUCTOS VALUES (NULL,'{producto}','{marca}','{seccion}'"
                             f",{precio},{stock},'{descripcion}')")
         self.conexion.commit()
         self.conexion.close()
@@ -134,3 +134,10 @@ class BaseDatos:
 
 
 
+    # def eliminar_datos(self,presupuesto):
+    #     self.conexion = sqlite3.connect("clientes.db")
+    #     self.cursor = self.conexion.cursor()
+    #     self.cursor.execute("SELECT * FROM CLIENTES")
+    #     self.cursor.execute(f"DELETE FROM CLIENTES WHERE PRESUPUESTO = {presupuesto}")
+    #     self.conexion.commit()
+    #     self.conexion.close()
