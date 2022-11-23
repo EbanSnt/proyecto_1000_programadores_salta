@@ -133,11 +133,3 @@ class BaseDatos:
 
 
 
-
-    # def eliminar_datos(self,presupuesto):
-    #     self.conexion = sqlite3.connect("clientes.db")
-    #     self.cursor = self.conexion.cursor()
-    #     self.cursor.execute("SELECT * FROM CLIENTES")
-    #     self.cursor.execute(f"DELETE FROM CLIENTES WHERE PRESUPUESTO = {presupuesto}")
-    #     self.conexion.commit()
-    #     self.conexion.close()
