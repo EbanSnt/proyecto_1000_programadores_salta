@@ -27,8 +27,7 @@ class Administrador:
         self.contenedor_entry = Frame(self.ventana, background="#DFDFDF")
         self.contenedor_entry.place(relx=0.75, rely=0.05, relwidth=0.22, relheight=0.6)
 
-        self.contenedor_tabla_ventas = Frame(self.ventana,background="black")
-        self.contenedor_tabla_ventas.place(relx=0.05,rely=0.67,relheight=0.25,relwidth=0.4)
+
 
         # Label y Entry para el ingreso de productos
         self.cartel_label = Label(self.contenedor_entry, text="ENVIOS/ACTUALIZACION \nDE DATOS",font=("Verdana",12),fg="red").place(relx=0.08, rely=0.05)
@@ -100,24 +99,7 @@ class Administrador:
 
         self.ventana.mainloop()
 
-    # Creacion de tabla de ventas realizadas
 
-        self.tabla_ventas = ttk.Treeview(self.contenedor_tabla_ventas, height=20,
-                                  columns=("#1", "#2", "#3", "#4", "#5"))
-        self.tabla_ventas.place(relx=0, rely=0)
-
-        self.tabla_ventas.column("#1", width=40, anchor=CENTER)
-        self.tabla_ventas.column("#2", width=40, anchor=CENTER)
-        self.tabla_ventas.column("#3", width=40, anchor=CENTER)
-        self.tabla_ventas.column("#4", width=40, anchor=CENTER)
-        self.tabla_ventas.column("#5", width=40, anchor=CENTER)
-
-        self.tabla_ventas["show"] = "headings"
-        self.tabla_ventas.heading("#1", text="VENTA", anchor=CENTER)
-        self.tabla_ventas.heading("#2", text="DNI", anchor=CENTER)
-        self.tabla_ventas.heading("#3", text="NOMBRE", anchor=CENTER)
-        self.tabla_ventas.heading("#4", text="APELLIDO", anchor=CENTER)
-        self.tabla_ventas.heading("#5", text="MONTO", anchor=CENTER)
 
 
     # Funcion para validar que no halla campos vacios en los entry antes de enviar
